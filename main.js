@@ -3,13 +3,23 @@ var https = require('https');
 var fs = require('fs');
 var url = require('url');
 var path = require('path');
-
+var map = require('through2-map');
 var express = require('express');
+
 var app = express();
 
 function DownloadRequest(http,options,userres) {
 
-    var req = https.request(options,function(res){
+    var hostname = options.hostname;
+    var client = null;
+
+    if(http==0)
+    client = https;
+
+    else
+    client = http;
+
+    var req = client.request(options,function(res) {
 
         if(Math.floor(res.statusCode/100)==2) {
 
@@ -27,6 +37,50 @@ function DownloadRequest(http,options,userres) {
               userres.type('application/octet-stream');
             }
 
+            if((res.headers['content-type'].indexOf('text/html'))!=-1 || (res.headers['content-type'].indexOf('text/javascript'))!=-1)
+            {
+                console.log('HTML doc !!');
+
+                  res.pipe(map({wantStrings: true}, function (str) {
+
+                          function change(link) {
+                              return `"http://localhost:5000/see?url=${link.slice(2,link.length-1)}"`;
+                          }
+
+                          return str.replace(/"http:\/\/[^"]*"/g,change);
+
+                  }))
+                  .pipe(map({wantStrings: true}, function (str) {
+
+                          function change(link) {
+                              return `"http://localhost:5000/see?url=${link.slice(1,link.length-1)}"`;
+                          }
+
+                          return str.replace(/="https:\/\/[^"]*"/g,change);
+
+                  }))
+                  .pipe(map({wantStrings: true}, function (str) {
+
+                          function change(link) {
+                              console.log("\nLINK : " + link);
+                              return `"http://localhost:5000/see?url=https://${hostname}${link.slice(1,link.length-1)}"`;
+                          }
+
+                          return str.replace(/"\/[^\/"]*"/g,change);
+
+                  }))
+                  .pipe(map({wantStrings: true}, function (str) {
+
+                          function change(link) {
+                              return `"http://localhost:5000/see?url=https://${link.slice(3,link.length-1)}"`;
+                          }
+
+                          return str.replace(/"\/\/[^"]*"/g,change);
+
+                  })).pipe(userres);
+            }
+
+            else
             res.pipe(userres);
         }
 
@@ -76,7 +130,7 @@ app.get('/see', function(request, response) {
 
   if(!request.query.url)
   {
-    response.end();
+    response.end('Go home, kid.');
     return;
   }
 
@@ -112,6 +166,10 @@ app.get('/see', function(request, response) {
 
       console.log('Calling DownloadRequest() with ',options);
       DownloadRequest(http,options,response);
+  }
+
+  else {
+    response.end('Go home, kid.');
   }
 
 });
