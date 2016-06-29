@@ -9,6 +9,7 @@
   "author": "Karuppiah <karuppiah7890@gmail.com> (https://www.github.com/karuppiah7890)",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.14.0"
+    "express": "^4.14.0",
+    "through2-map": "^2.0.0"
   }
 }
