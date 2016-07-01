@@ -56,7 +56,7 @@ function DownloadRequest(http,options,userres) {
                               return `"https://pirata.herokuapp.com/see?url=${link.slice(1,link.length-1)}"`;
                           }
 
-                          return str.replace(/="https:\/\/[^"]*"/g,change);
+                          return str.replace(/"https:\/\/[^"]*"/g,change);
 
                   }))
                   .pipe(map({wantStrings: true}, function (str) {
