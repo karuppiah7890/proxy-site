@@ -44,7 +44,7 @@ function DownloadRequest(http,options,userres) {
                   res.pipe(map({wantStrings: true}, function (str) {
 
                           function change(link) {
-                              return `"http://localhost:5000/see?url=${link.slice(2,link.length-1)}"`;
+                              return `"https://pirata.herokuapp.com/see?url=${link.slice(2,link.length-1)}"`;
                           }
 
                           return str.replace(/"http:\/\/[^"]*"/g,change);
@@ -53,7 +53,7 @@ function DownloadRequest(http,options,userres) {
                   .pipe(map({wantStrings: true}, function (str) {
 
                           function change(link) {
-                              return `"http://localhost:5000/see?url=${link.slice(1,link.length-1)}"`;
+                              return `"https://pirata.herokuapp.com/see?url=${link.slice(1,link.length-1)}"`;
                           }
 
                           return str.replace(/="https:\/\/[^"]*"/g,change);
@@ -63,7 +63,7 @@ function DownloadRequest(http,options,userres) {
 
                           function change(link) {
                               console.log("\nLINK : " + link);
-                              return `"http://localhost:5000/see?url=https://${hostname}${link.slice(1,link.length-1)}"`;
+                              return `"https://pirata.herokuapp.com/see?url=https://${hostname}${link.slice(1,link.length-1)}"`;
                           }
 
                           return str.replace(/"\/[^\/"]*"/g,change);
@@ -72,7 +72,7 @@ function DownloadRequest(http,options,userres) {
                   .pipe(map({wantStrings: true}, function (str) {
 
                           function change(link) {
-                              return `"http://localhost:5000/see?url=https://${link.slice(3,link.length-1)}"`;
+                              return `"https://pirata.herokuapp.com/see?url=https://${link.slice(3,link.length-1)}"`;
                           }
 
                           return str.replace(/"\/\/[^"]*"/g,change);
