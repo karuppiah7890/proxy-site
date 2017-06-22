@@ -128,6 +128,9 @@ app.set('port', (process.env.PORT || 5000));
 
 app.get('/see', function(request, response) {
 
+  response.end('Contact karuppiah7890@gmail.com if you want to use this site!');
+  return;
+
   if(!request.query.url)
   {
     response.end('Go home, kid.');
@@ -173,6 +176,11 @@ app.get('/see', function(request, response) {
   }
 
 });
+
+app.use('/', (req, res) => {
+  res.end('Contact karuppiah7890@gmail.com if you want to use this site!');
+  return;
+})
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
